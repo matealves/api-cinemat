@@ -1,6 +1,6 @@
 - DB: 
     - users:
-        name, lastName, email, password
+        name, lastName, email, password ✔️
 
     - movies:
         name, description, poster, schedules:
@@ -8,5 +8,5 @@
                                                         number, available * 120
 
 - API:
-    - CRUD users + login + autentication
+    - CRUD users + register ✔️ + login ✔️ + autentication
     - CRUD movies
