@@ -1,7 +1,12 @@
 - DB: 
     - users:
         id, name, lastName, email, password
-    - movies:
-        id, name, description, poster, schedules    
 
-- API
+    - movies:
+        id, name, description, poster, schedules:
+                                            hour, room, sents: * 3
+                                                            number, available * 120
+
+- API:
+    - CRUD users + login + autentication
+    - CRUD movies
