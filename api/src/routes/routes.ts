@@ -10,8 +10,8 @@ router.get("/ping", (req, res) => {
   return res.json({ pong: true });
 });
 
-// router.post("/register", userController.register);
-// router.post("/login", userController.login);
+router.post("/register", UserController.register);
+router.post("/login", UserController.login);
 
 // router.get("/home", Auth.private, userController.list);
 
