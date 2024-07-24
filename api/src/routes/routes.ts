@@ -1,6 +1,7 @@
 import { Router } from "express";
 
-// import * as SeatController from "../controllers/seatController";
+import { Auth } from "../middlewares/auth";
+import * as UserController from "../controllers/userController";
 
 const router = Router();
 
@@ -9,6 +10,9 @@ router.get("/ping", (req, res) => {
   return res.json({ pong: true });
 });
 
-// router.get("/seats", SeatController.getSeats);
+// router.post("/register", userController.register);
+// router.post("/login", userController.login);
+
+// router.get("/home", Auth.private, userController.list);
 
 export default router;
