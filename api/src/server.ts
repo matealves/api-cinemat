@@ -1,6 +1,10 @@
 import express from "express";
+import dotenv from "dotenv";
+
 import connectDB from "./database/mongodb";
 import router from "./routes/routes";
+
+dotenv.config();
 
 const server = express();
 const PORT = process.env.PORT || 4000;
