@@ -34,21 +34,23 @@ export const register = async (req: Request, res: Response) => {
 
         res.status(201);
         res.json({
-          id: newUser.id,
+          status: true,
           message: "Usuário cadastrado com sucesso!",
+          email,
+          id: newUser.id,
           token,
         });
       } else {
-        // res.json({ error: "E-mail já existe." });
-        // res.json({ error: "E-mail já existe." });
-        throw new Error("Usuário já existe.");
+        res.status(400).json({ error: "Usuário já existe." });
       }
     } else {
-      // res.json({ error: "Dados obrigatórios não enviados." });
-      throw new Error("Dados obrigatórios não enviados.");
+      res.status(400).json({ error: "Dados obrigatórios não enviados." });
     }
-  } catch (err) {
-    res.json({ error: err ? err : "Ocorreu algum erro ao registrar usuário." });
+  } catch (err: any) {
+    res.status(500).json({
+      message: "Ocorreu algum erro ao registrar usuário.",
+      error: err.message,
+    });
   }
 };
 
