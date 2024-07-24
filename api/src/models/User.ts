@@ -1,11 +1,5 @@
 import { Schema, model, Model, connection } from "mongoose";
-
-type UserType = {
-  name: string;
-  lastName: string;
-  email: string;
-  password: string;
-};
+import { UserType } from "../types/user";
 
 const schema = new Schema<UserType>({
   name: { type: String, required: true },
