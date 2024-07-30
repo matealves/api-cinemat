@@ -61,37 +61,44 @@ export const register = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
-  if (req.body.email && req.body.password) {
-    const email: string = req.body.email;
-    const password: string = req.body.password;
+  try {
+    if (req.body.email && req.body.password) {
+      const email: string = req.body.email;
+      const password: string = req.body.password;
 
-    const user = await User.findOne({ email, password });
+      const user = await User.findOne({ email, password });
 
-    if (user) {
-      const token = JWT.sign(
-        {
-          id: user.id,
-          name: user.name,
-          lastName: user.lastName,
-          email: user.email,
-        },
-        process.env.JWT_SECRET_KEY as string,
-        { expiresIn: "2h" }
-      );
+      if (user) {
+        const token = JWT.sign(
+          {
+            id: user.id,
+            name: user.name,
+            lastName: user.lastName,
+            email: user.email,
+          },
+          process.env.JWT_SECRET_KEY as string,
+          { expiresIn: "2h" }
+        );
 
-      res.json({
-        status: true,
-        userLogged: {
-          id: user.id,
-          name: user.name,
-          lastName: user.lastName,
-          email: user.email,
-        },
-        token,
-      });
-      return;
+        res.json({
+          status: true,
+          userLogged: {
+            id: user.id,
+            name: user.name,
+            lastName: user.lastName,
+            email: user.email,
+          },
+          token,
+        });
+        return;
+      }
+    } else {
+      res.json({ status: false });
     }
+  } catch (err: any) {
+    res.status(500).json({
+      message: "Ocorreu algum erro ao fazer login.",
+      error: err.message,
+    });
   }
-
-  res.json({ status: false });
 };
