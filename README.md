@@ -1,11 +1,15 @@
 # Cinemat
 
-### Projeto Full-stack completo. Banco de dados, API e Front-end de uma aplicação de compra de ingressos para um cinema. // Complete full-stack project, database, API and front-end of a cinema ticket purchase application..
+### Projeto full-stack completo. Banco de dados, API e Interface, de uma aplicação usada na compra de ingressos para um filme de cinema. 
+### Complete full-stack project. Database, API and Interface, of an application used to purchase tickets for a cinema film.
 
+[• Visão geral](#review)<br>
 [• Como rodar o projeto](#start)<br>
 [• Skills utilizadas](#leng)<br>
 [• Contato](#contato)<br>
 <br>
+
+<p id="review"></p>
 
 # Visão geral
 
@@ -29,7 +33,7 @@ Foram utilizados diversos conhecimentos adquiridos ao longo do tempo, com o intu
 
 ### - Como rodar o projeto:
 
-`########...`
+`######## em desenvolvimento...`
 
 <br>
 
@@ -39,8 +43,8 @@ Foram utilizados diversos conhecimentos adquiridos ao longo do tempo, com o intu
 
 <p>
   <img align="center" title="TypeScript" height="30" width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg">
-  <img align="center" title="JavaScript" height="30" width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg">
-  <img align="center" title="NodeJs" height="30" width="40" title="NodeJs" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg">
+  <img align="center" title="React" height="30" width="40" title="React" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg">
+  <img align="center" title="NodeJS" height="30" width="40" title="NodeJs" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg">
   <img align="center" title="MongoDB" height="30" width="40" title="NodeJs" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-original.svg">
   <img align="center" title="Docker" height="40" width="40" title="NodeJs" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg">
 
