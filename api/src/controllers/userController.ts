@@ -41,10 +41,16 @@ export const register = async (req: Request, res: Response) => {
           token,
         });
       } else {
-        res.status(400).json({ error: "Usuário já existe." });
+        res.status(400).json({
+          status: false,
+          error: "Usuário já existe.",
+        });
       }
     } else {
-      res.status(400).json({ error: "Dados obrigatórios não enviados." });
+      res.status(400).json({
+        status: false,
+        error: "Dados obrigatórios não enviados.",
+      });
     }
   } catch (err: any) {
     res.status(500).json({
@@ -73,7 +79,16 @@ export const login = async (req: Request, res: Response) => {
         { expiresIn: "2h" }
       );
 
-      res.json({ status: true, token });
+      res.json({
+        status: true,
+        userLogged: {
+          id: user.id,
+          name: user.name,
+          lastName: user.lastName,
+          email: user.email,
+        },
+        token,
+      });
       return;
     }
   }
