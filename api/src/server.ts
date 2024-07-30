@@ -3,7 +3,8 @@ import path from "path";
 import dotenv from "dotenv";
 
 import connectDB from "./database/mongodb";
-import routes from "./routes/routes";
+import userRoutes from "./routes/user.routes";
+import moviesRoutes from "./routes/movies.routes";
 
 dotenv.config();
 
@@ -13,8 +14,13 @@ const PORT = process.env.PORT || 4000;
 server.use(express.static(path.join(__dirname, "public")));
 server.use(express.json());
 
-server.use("/", routes);
-
+// Test route
+server.use("/ping", (req, res) => {
+  return res.json({ pong: true });
+});
+// Routes
+server.use("/users", userRoutes);
+server.use("/movies", moviesRoutes);
 
 server.listen(PORT, () => {
   console.log(`[PORT:${PORT}] \x1b[32mServidor local iniciado.\x1b[0m\n`);
