@@ -8,5 +8,5 @@
                                                         number, available * 120
 
 - API:
-    - CRUD users + register ✔️ + login ✔️ + autentication
+    - CRUD users + register ✔️ + login ✔️ + autentication ✔️
     - CRUD movies
