@@ -93,7 +93,10 @@ export const login = async (req: Request, res: Response) => {
         return;
       }
     } else {
-      res.json({ status: false });
+      res.status(400).json({
+        status: false,
+        message: "Dados obrigatórios não enviados.",
+      });
     }
   } catch (err: any) {
     res.status(500).json({
