@@ -38,12 +38,17 @@ export const create = async (req: Request, res: Response) => {
       };
 
       newMovie.schedules = schedules(3);
-      // const result = await newMovie.save();
+      await newMovie.save();
 
       res.status(201).json({
         status: true,
         message: "Filme adicionado com sucesso!",
         data: newMovie,
+      });
+    } else {
+      res.status(400).json({
+        status: false,
+        message: "Dados obrigatórios não enviados.",
       });
     }
   } catch (err: any) {
@@ -56,7 +61,7 @@ export const create = async (req: Request, res: Response) => {
 
 export const list = async (req: Request, res: Response) => {
   try {
-    const data = await Movie.find();
+    const data = await Movie.find().select("name description poster");
 
     res.status(200).json({
       data,
