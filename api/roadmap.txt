@@ -22,8 +22,10 @@ remove ✔️
 create ✔️
 list ✔️
 getOne ✔️
-update
-ticketPay
+update✔️
+schedules✔️
+sents
+tickets
 remove ✔️
 
 - Utilizar HASH na senha cadastrada
