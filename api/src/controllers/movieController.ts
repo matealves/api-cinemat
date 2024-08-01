@@ -73,3 +73,54 @@ export const list = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const getOne = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const data = await Movie.findById(id);
+
+    res.status(200).json({
+      data,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      message: "Ocorreu algum erro ao buscar o filme.",
+      error: err.message,
+    });
+  }
+};
+
+// export const update = async (req: Request, res: Response) => {
+//   try {
+//     const user = await User.findOne({ email: "ph@email.com.br" });
+//   if (user) {
+//     user.age = 46;
+//     // await user?.save();
+//     console.log("userUpdated: ", user);
+//   }
+//     res.status(200).json({
+//       message: "Filme removido com sucesso!",
+//     });
+//   } catch (err: any) {
+//     res.status(500).json({
+//       message: "Ocorreu algum erro ao remover o filme.",
+//       error: err.message,
+//     });
+//   }
+// };
+
+export const remove = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    await Movie.deleteOne({ _id: id });
+
+    res.status(200).json({
+      message: "Filme removido com sucesso!",
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      message: "Ocorreu algum erro ao remover o filme.",
+      error: err.message,
+    });
+  }
+};

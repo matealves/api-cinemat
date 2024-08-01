@@ -7,7 +7,9 @@ const router = Router();
 
 router.post("/", MovieController.create);
 
-router.get("/", Auth.private, MovieController.list);
+// router.get("/", Auth.private, MovieController.list);
+router.get("/", MovieController.list);
+router.get("/:id", MovieController.getOne);
 
 // router.put("/:id", MovieController.update);
 
