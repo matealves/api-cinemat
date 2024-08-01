@@ -1,12 +1,29 @@
-- DB: 
-    - users:
+- DB: ✔️
+    - users: ✔️
         name, lastName, email, password ✔️
 
-    - movies:
-        name, description, poster, schedules:
-                                        hour, room, sents: * 3
-                                                        number, available * 120
+    - movies: ✔️
+        name, description, poster, schedules: ✔️
+                                        hour, room, sents: * 3 ✔️
+                                                        number, available * 120 ✔️
 
-- API:
-    - CRUD users + register ✔️ + login ✔️ + autentication ✔️
-    - CRUD movies
+- API: ✔️
+    - CRUD users + register + login + autentication ✔️
+    - CRUD movies ✔️
+
+- Rotas Users: 
+create ✔️
+list ✔️
+getOne ✔️
+update ✔️
+remove ✔️
+
+- Rotas Movies:
+create ✔️
+list ✔️
+getOne ✔️
+update
+ticketPay
+remove ✔️
+
+- Utilizar HASH na senha cadastrada
