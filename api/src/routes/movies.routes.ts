@@ -7,11 +7,13 @@ const router = Router();
 
 router.post("/", MovieController.create);
 
-// router.get("/", Auth.private, MovieController.list);
 router.get("/", MovieController.list);
 router.get("/:id", MovieController.getOne);
+router.get("/schedules/:id", MovieController.schedules);
+// router.get("/sents/:id", Auth.private, MovieController.sents);
+router.get("/sents/:id", MovieController.sents);
 
-// router.put("/:id", MovieController.update);
+router.put("/:id", MovieController.update);
 
 router.delete("/:id", MovieController.remove);
 

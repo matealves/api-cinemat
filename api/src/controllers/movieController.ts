@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { getRandomNumber } from "../utils/getRandomNumber";
 import { generateRandomTimes } from "../utils/generateRandomTimes";
 
-import { Schedules, Sents } from "../types/movie";
+import { ScheduleType, SentType } from "../types/movie";
 import Movie from "../models/Movie";
 
 export const create = async (req: Request, res: Response) => {
@@ -16,7 +16,7 @@ export const create = async (req: Request, res: Response) => {
       newMovie.description = description;
       newMovie.poster = poster;
 
-      const schedules = (count: number): Schedules[] => {
+      const schedules = (count: number): ScheduleType[] => {
         const items = [];
         const hours = generateRandomTimes(count);
 
@@ -26,7 +26,7 @@ export const create = async (req: Request, res: Response) => {
             room: getRandomNumber(1, 12),
             sents: Array.from(
               { length: 60 },
-              (_, index): Sents => ({
+              (_, index): SentType => ({
                 number: index + 1,
                 reserved: false,
               })
@@ -74,6 +74,36 @@ export const list = async (req: Request, res: Response) => {
   }
 };
 
+export const schedules = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const result = await Movie.findById(id).select("name schedules");
+
+    if (result) {
+      type Data = {
+        nameMovie: string;
+        schedules: string[];
+      };
+
+      const data: Data = { nameMovie: result.name, schedules: [] };
+      const schedules = result.schedules;
+
+      schedules.map((item) => {
+        return data.schedules.push(item.hour);
+      });
+
+      res.status(200).json({
+        data,
+      });
+    }
+  } catch (err: any) {
+    res.status(500).json({
+      message: "Ocorreu algum erro ao listar os horários do filme.",
+      error: err.message,
+    });
+  }
+};
+
 export const getOne = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
@@ -90,24 +120,31 @@ export const getOne = async (req: Request, res: Response) => {
   }
 };
 
-// export const update = async (req: Request, res: Response) => {
-//   try {
-//     const user = await User.findOne({ email: "ph@email.com.br" });
-//   if (user) {
-//     user.age = 46;
-//     // await user?.save();
-//     console.log("userUpdated: ", user);
-//   }
-//     res.status(200).json({
-//       message: "Filme removido com sucesso!",
-//     });
-//   } catch (err: any) {
-//     res.status(500).json({
-//       message: "Ocorreu algum erro ao remover o filme.",
-//       error: err.message,
-//     });
-//   }
-// };
+export const update = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const body = req.body;
+
+    const updateData = {
+      ...body,
+      $inc: { __v: 1 },
+    };
+
+    const userUpdated = await Movie.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
+
+    res.status(201).json({
+      message: "Dados atualizados com sucesso!",
+      userUpdated,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      message: "Ocorreu algum erro ao atualizar dados do filme.",
+      error: err.message,
+    });
+  }
+};
 
 export const remove = async (req: Request, res: Response) => {
   try {
