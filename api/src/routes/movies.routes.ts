@@ -13,7 +13,6 @@ router.get("/:id", MovieController.getOne);
 
 // router.put("/:id", MovieController.update);
 
-// router.delete("/:id", MovieController.remove);
-
+router.delete("/:id", MovieController.remove);
 
 export default router;
