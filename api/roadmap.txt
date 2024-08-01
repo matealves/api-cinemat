@@ -24,7 +24,7 @@ list ✔️
 getOne ✔️
 update✔️
 schedules✔️
-sents
+sents ✔️
 tickets
 remove ✔️
 
