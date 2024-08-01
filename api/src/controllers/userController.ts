@@ -91,6 +91,11 @@ export const login = async (req: Request, res: Response) => {
           token,
         });
         return;
+      } else {
+        res.status(404).json({
+          status: false,
+          message: "Usuário e/ou senha inválidos.",
+        });
       }
     } else {
       res.status(400).json({
