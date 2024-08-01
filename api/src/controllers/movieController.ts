@@ -77,16 +77,21 @@ export const list = async (req: Request, res: Response) => {
 export const schedules = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const result = await Movie.findById(id).select("name schedules");
+    const movie = await Movie.findById(id).select("name schedules poster");
 
-    if (result) {
+    if (movie) {
       type Data = {
         nameMovie: string;
+        poster: string;
         schedules: string[];
       };
 
-      const data: Data = { nameMovie: result.name, schedules: [] };
-      const schedules = result.schedules;
+      const data: Data = {
+        nameMovie: movie.name,
+        poster: movie.poster,
+        schedules: [],
+      };
+      const schedules = movie.schedules;
 
       schedules.map((item) => {
         return data.schedules.push(item.hour);
@@ -99,6 +104,54 @@ export const schedules = async (req: Request, res: Response) => {
   } catch (err: any) {
     res.status(500).json({
       message: "Ocorreu algum erro ao listar os horários do filme.",
+      error: err.message,
+    });
+  }
+};
+
+export const sents = async (req: Request, res: Response) => {
+  try {
+    const { idMovie, hour } = req.body;
+
+    if (idMovie && hour) {
+      const movie = await Movie.findById(idMovie).select(
+        "name schedules poster"
+      );
+
+      if (movie) {
+        const regex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
+        const hourValidation = regex.test(hour);
+
+        if (hourValidation) {
+          const item = movie.schedules.find((item) => item.hour === hour);
+
+          const data = {
+            nameMovie: movie.name,
+            poster: movie.poster,
+            hour,
+            room: item?.room,
+            sents: item?.sents,
+          };
+
+          res.status(200).json({
+            data,
+          });
+        }
+      } else {
+        res.status(400).json({
+          status: false,
+          message: "Horário inválido.",
+        });
+      }
+    } else {
+      res.status(400).json({
+        status: false,
+        message: "Dados obrigatórios não enviados.",
+      });
+    }
+  } catch (err: any) {
+    res.status(500).json({
+      message: "Ocorreu algum erro ao listar as poltronas da sala.",
       error: err.message,
     });
   }
