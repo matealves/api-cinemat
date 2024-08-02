@@ -28,6 +28,8 @@ seats ✔️
 tickets ✔️
 remove ✔️
 
+- Refatorar controllers > separar funções no "Services"
+
 - Utilizar HASH na senha cadastrada
 
 - Vincular usuário na reserva dos assentos
