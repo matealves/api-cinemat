@@ -1,8 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import JWT from "jsonwebtoken";
-import dotenv from "dotenv";
-
-dotenv.config();
+import { verifyToken } from "../utils/token";
 
 export const Auth = {
   private: async (req: Request, res: Response, next: NextFunction) => {
@@ -13,14 +10,8 @@ export const Auth = {
       const [authType, token] = authorization.split(" ");
 
       if (authType === "Bearer" && token) {
-        try {
-          const decoded = JWT.verify(
-            token,
-            process.env.JWT_SECRET_KEY as string
-          );
-
-          success = !!decoded;
-        } catch (error) {}
+        const decoded = verifyToken(token);
+        success = !!decoded;
       }
     }
 
