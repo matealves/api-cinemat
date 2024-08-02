@@ -3,6 +3,8 @@ import JWT from "jsonwebtoken";
 import dotenv from "dotenv";
 
 import User from "../models/User";
+import { generateToken, verifyToken } from "../utils/token";
+import * as UserService from "../services/UserService";
 
 dotenv.config();
 
@@ -11,31 +13,26 @@ export const register = async (req: Request, res: Response) => {
     const { name, lastName, email, password } = req.body;
 
     if (name && lastName && email && password) {
-      const hasUser = await User.findOne({ email: email });
+      const hasUser = await UserService.findByEmail(email);
 
       if (!hasUser) {
-        const newUser = await User.create({
+        const newUser = await UserService.createUser(
           name,
           lastName,
           email,
-          password,
-        });
-
-        const token = JWT.sign(
-          {
-            id: newUser.id,
-            name: newUser.name,
-            lastName: newUser.lastName,
-            email: newUser.email,
-          },
-          process.env.JWT_SECRET_KEY as string,
-          { expiresIn: "2h" }
+          password
         );
 
-        res.status(201);
-        res.json({
+        const token = generateToken({
+          id: newUser.id,
+          name,
+          lastName,
+          email,
+        });
+
+        res.status(201).json({
           status: true,
-          message: "Usuário cadastrado com sucesso!",
+          message: "User registered successfully!",
           email,
           id: newUser.id,
           token,
@@ -43,18 +40,18 @@ export const register = async (req: Request, res: Response) => {
       } else {
         res.status(400).json({
           status: false,
-          error: "Usuário já existe.",
+          error: "User already exists.",
         });
       }
     } else {
       res.status(400).json({
         status: false,
-        error: "Dados obrigatórios não enviados.",
+        error: "Incomplete data.",
       });
     }
   } catch (err: any) {
     res.status(500).json({
-      message: "Ocorreu algum erro ao registrar usuário.",
+      message: "An error occurred while registering the user.",
       error: err.message,
     });
   }
@@ -100,7 +97,7 @@ export const login = async (req: Request, res: Response) => {
     } else {
       res.status(400).json({
         status: false,
-        message: "Dados obrigatórios não enviados.",
+        message: "Incomplete data.",
       });
     }
   } catch (err: any) {
