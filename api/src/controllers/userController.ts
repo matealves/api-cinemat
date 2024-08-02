@@ -59,23 +59,18 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   try {
-    if (req.body.email && req.body.password) {
-      const email: string = req.body.email;
-      const password: string = req.body.password;
+    const { email, password } = req.body;
 
-      const user = await User.findOne({ email, password });
+    if (email && password) {
+      const user = await UserService.authentication(email, password);
 
       if (user) {
-        const token = JWT.sign(
-          {
-            id: user.id,
-            name: user.name,
-            lastName: user.lastName,
-            email: user.email,
-          },
-          process.env.JWT_SECRET_KEY as string,
-          { expiresIn: "2h" }
-        );
+        const token = generateToken({
+          id: user.id,
+          name: user.name,
+          lastName: user.lastName,
+          email: user.email,
+        });
 
         res.json({
           status: true,
@@ -87,11 +82,10 @@ export const login = async (req: Request, res: Response) => {
           },
           token,
         });
-        return;
       } else {
-        res.status(404).json({
+        res.status(403).json({
           status: false,
-          message: "Usuário e/ou senha inválidos.",
+          message: "Invalid username and/or password.",
         });
       }
     } else {
@@ -102,7 +96,7 @@ export const login = async (req: Request, res: Response) => {
     }
   } catch (err: any) {
     res.status(500).json({
-      message: "Ocorreu algum erro ao fazer login.",
+      message: "Error when logging in.",
       error: err.message,
     });
   }
