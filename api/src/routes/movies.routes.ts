@@ -6,14 +6,15 @@ import * as MovieController from "../controllers/movieController";
 const router = Router();
 
 router.post("/", MovieController.create);
+// router.post("/sents/:id", Auth.private, MovieController.sents);
+router.post("/sents", MovieController.sents);
 
-// router.get("/", Auth.private, MovieController.list);
 router.get("/", MovieController.list);
 router.get("/:id", MovieController.getOne);
+router.get("/schedules/:id", MovieController.schedules);
 
-// router.put("/:id", MovieController.update);
+router.put("/:id", MovieController.update);
 
-// router.delete("/:id", MovieController.remove);
-
+router.delete("/:id", MovieController.remove);
 
 export default router;

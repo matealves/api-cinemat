@@ -1,17 +1,17 @@
-export type Sents = {
+export type SentType = {
   number: number;
   reserved: false;
 };
 
-export type Schedules = {
+export type ScheduleType = {
   hour: string;
   room: number;
-  sents: Sents[];
+  sents: SentType[];
 };
 
 export type MovieType = {
   name: string;
   description: string;
   poster: string;
-  schedules: Schedules[];
+  schedules: ScheduleType[];
 };

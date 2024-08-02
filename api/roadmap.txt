@@ -5,7 +5,7 @@
     - movies: ✔️
         name, description, poster, schedules: ✔️
                                         hour, room, sents: * 3 ✔️
-                                                        number, available * 120 ✔️
+                                                        number, reserved * 120 ✔️
 
 - API: ✔️
     - CRUD users + register + login + autentication ✔️
@@ -22,8 +22,10 @@ remove ✔️
 create ✔️
 list ✔️
 getOne ✔️
-update
-ticketPay
+update✔️
+schedules✔️
+sents ✔️
+tickets
 remove ✔️
 
 - Utilizar HASH na senha cadastrada
