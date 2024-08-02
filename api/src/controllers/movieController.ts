@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { getRandomNumber } from "../utils/getRandomNumber";
 import { generateRandomTimes } from "../utils/generateRandomTimes";
 
-import { ScheduleType, SentType } from "../types/movie";
+import { ScheduleType, SeatType } from "../types/movie";
 import Movie from "../models/Movie";
 
 export const create = async (req: Request, res: Response) => {
@@ -24,9 +24,9 @@ export const create = async (req: Request, res: Response) => {
           items.push({
             hour: hours[items.length],
             room: getRandomNumber(1, 12),
-            sents: Array.from(
+            seats: Array.from(
               { length: 60 },
-              (_, index): SentType => ({
+              (_, index): SeatType => ({
                 number: index + 1,
                 reserved: false,
               })
@@ -109,14 +109,13 @@ export const schedules = async (req: Request, res: Response) => {
   }
 };
 
-export const sents = async (req: Request, res: Response) => {
+export const seats = async (req: Request, res: Response) => {
   try {
-    const { idMovie, hour } = req.body;
+    const id = req.params.id;
+    const { hour } = req.body;
 
-    if (idMovie && hour) {
-      const movie = await Movie.findById(idMovie).select(
-        "name schedules poster"
-      );
+    if (hour) {
+      const movie = await Movie.findById(id).select("name schedules poster");
 
       if (movie) {
         const regex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
@@ -125,23 +124,30 @@ export const sents = async (req: Request, res: Response) => {
         if (hourValidation) {
           const item = movie.schedules.find((item) => item.hour === hour);
 
+          if (!item) {
+            return res.status(404).json({
+              status: false,
+              message: "404 - horário não encontrado.",
+            });
+          }
+
           const data = {
             nameMovie: movie.name,
             poster: movie.poster,
             hour,
-            room: item?.room,
-            sents: item?.sents,
+            room: item.room,
+            seats: item.seats,
           };
 
           res.status(200).json({
             data,
           });
+        } else {
+          res.status(400).json({
+            status: false,
+            message: "Horário inválido.",
+          });
         }
-      } else {
-        res.status(400).json({
-          status: false,
-          message: "Horário inválido.",
-        });
       }
     } else {
       res.status(400).json({
@@ -194,6 +200,101 @@ export const update = async (req: Request, res: Response) => {
   } catch (err: any) {
     res.status(500).json({
       message: "Ocorreu algum erro ao atualizar dados do filme.",
+      error: err.message,
+    });
+  }
+};
+
+export const buyTickets = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const { hour, seatTickets } = req.body;
+
+    if (hour && seatTickets) {
+      const regex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
+      const hourValidation = regex.test(hour);
+
+      if (!hourValidation) {
+        return res.status(400).json({
+          status: false,
+          message: "Horário inválido.",
+        });
+      }
+
+      const movie = await Movie.findById(id).select("name schedules");
+
+      if (movie) {
+        const item = movie.schedules.find((item) => item.hour === hour);
+
+        if (!item) {
+          return res.status(404).json({
+            status: false,
+            message: "404 - horário não encontrado.",
+          });
+        }
+
+        let shouldUpdate = false;
+
+        // Validar disponibilidade dos assentos
+        for (const ticket of seatTickets) {
+          const findSeat = item.seats.find((seat) => seat.number === ticket);
+
+          if (findSeat) {
+            if (findSeat.reserved) {
+              return res.status(409).json({
+                status: false,
+                message: "Assento indisponível!",
+              });
+            } else {
+              shouldUpdate = true;
+            }
+          } else {
+            return res.status(404).json({
+              status: false,
+              message: "404- assento não encontrado.",
+            });
+          }
+        }
+
+        const reserved = [];
+
+        // Reservar assentos após validação
+        if (shouldUpdate) {
+          for (const ticket of seatTickets) {
+            const seat = item.seats.find((seat) => seat.number === ticket);
+
+            if (seat) {
+              seat.reserved = true;
+              reserved.push(seat);
+            }
+          }
+
+          await movie.save();
+
+          res.status(201).json({
+            status: true,
+            message: "Assentos reservados com sucesso!",
+            nameMovie: movie.name,
+            hour: item.hour,
+            room: item.room,
+            seatsReserved: reserved,
+          });
+        }
+      } else {
+        res.status(404).json({
+          status: false,
+          message: "404 - filme não encontrado.",
+        });
+      }
+    } else {
+      res.status(400).json({
+        status: false,
+        message: "Dados obrigatórios não enviados.",
+      });
+    }
+  } catch (err: any) {
+    res.status(500).json({
+      message: "Ocorreu algum erro ao reservar entradas para o filme.",
       error: err.message,
     });
   }
