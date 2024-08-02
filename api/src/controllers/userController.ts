@@ -51,7 +51,7 @@ export const register = async (req: Request, res: Response) => {
     }
   } catch (err: any) {
     res.status(500).json({
-      message: "An error occurred while registering the user.",
+      message: "Error registering user.",
       error: err.message,
     });
   }
@@ -104,14 +104,14 @@ export const login = async (req: Request, res: Response) => {
 
 export const list = async (req: Request, res: Response) => {
   try {
-    const data = await User.find().select("name lastName email");
+    const data = await UserService.getAll();
 
     res.status(200).json({
       data,
     });
   } catch (err: any) {
     res.status(500).json({
-      message: "Ocorreu algum erro ao listar os usuários.",
+      message: "Error listing users.",
       error: err.message,
     });
   }
@@ -119,15 +119,14 @@ export const list = async (req: Request, res: Response) => {
 
 export const getOne = async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
-    const data = await User.findById(id);
+    const data = await UserService.findById(req.params.id);
 
     res.status(200).json({
       data,
     });
   } catch (err: any) {
     res.status(500).json({
-      message: "Ocorreu algum erro ao buscar o usuário.",
+      message: "Error when searching for the user.",
       error: err.message,
     });
   }
