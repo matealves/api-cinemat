@@ -1,7 +1,7 @@
 import { Schema, model, Model, connection } from "mongoose";
 import { MovieType } from "../types/movie";
 
-const SentsSchema = new Schema(
+const SeatsSchema = new Schema(
   {
     number: { type: Number, required: true },
     reserved: { type: Boolean, required: true, default: false },
@@ -13,7 +13,7 @@ const SchedulesSchema = new Schema(
   {
     hour: { type: String, required: true },
     room: { type: Number, required: true },
-    sents: { type: [SentsSchema], required: true },
+    seats: { type: [SeatsSchema], required: true },
   },
   { _id: false }
 );

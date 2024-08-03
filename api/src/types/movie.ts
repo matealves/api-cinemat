@@ -1,12 +1,12 @@
-export type SentType = {
+export type SeatType = {
   number: number;
-  reserved: false;
+  reserved: boolean;
 };
 
 export type ScheduleType = {
   hour: string;
   room: number;
-  sents: SentType[];
+  seats: SeatType[];
 };
 
 export type MovieType = {

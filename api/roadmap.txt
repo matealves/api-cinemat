@@ -4,7 +4,7 @@
 
     - movies: ✔️
         name, description, poster, schedules: ✔️
-                                        hour, room, sents: * 3 ✔️
+                                        hour, room, seats: * 3 ✔️
                                                         number, reserved * 120 ✔️
 
 - API: ✔️
@@ -24,8 +24,13 @@ list ✔️
 getOne ✔️
 update✔️
 schedules✔️
-sents ✔️
-tickets
+seats ✔️
+tickets ✔️
 remove ✔️
 
-- Utilizar HASH na senha cadastrada
+- Utilizar HASH na senha cadastrada ✔️
+
+- Refatorar controllers User > separar funções no "Services" ✔️
+- Refatorar controllers Movies > separar funções no "Services"
+
+- Vincular usuário na reserva dos assentos

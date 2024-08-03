@@ -1,41 +1,35 @@
 import { Request, Response } from "express";
-import JWT from "jsonwebtoken";
 import dotenv from "dotenv";
-
-import User from "../models/User";
-
 dotenv.config();
+
+import { generateToken } from "../utils/token";
+import * as UserService from "../services/UserService";
 
 export const register = async (req: Request, res: Response) => {
   try {
     const { name, lastName, email, password } = req.body;
 
     if (name && lastName && email && password) {
-      const hasUser = await User.findOne({ email: email });
+      const hasUser = await UserService.findByEmail(email);
 
       if (!hasUser) {
-        const newUser = await User.create({
+        const newUser = await UserService.createUser(
           name,
           lastName,
           email,
-          password,
-        });
-
-        const token = JWT.sign(
-          {
-            id: newUser.id,
-            name: newUser.name,
-            lastName: newUser.lastName,
-            email: newUser.email,
-          },
-          process.env.JWT_SECRET_KEY as string,
-          { expiresIn: "2h" }
+          password
         );
 
-        res.status(201);
-        res.json({
+        const token = generateToken({
+          id: newUser.id,
+          name,
+          lastName,
+          email,
+        });
+
+        res.status(201).json({
           status: true,
-          message: "Usuário cadastrado com sucesso!",
+          message: "User registered successfully!",
           email,
           id: newUser.id,
           token,
@@ -43,18 +37,18 @@ export const register = async (req: Request, res: Response) => {
       } else {
         res.status(400).json({
           status: false,
-          error: "Usuário já existe.",
+          error: "User already exists.",
         });
       }
     } else {
       res.status(400).json({
         status: false,
-        error: "Dados obrigatórios não enviados.",
+        error: "Incomplete data.",
       });
     }
   } catch (err: any) {
     res.status(500).json({
-      message: "Ocorreu algum erro ao registrar usuário.",
+      message: "Error registering user.",
       error: err.message,
     });
   }
@@ -62,23 +56,18 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   try {
-    if (req.body.email && req.body.password) {
-      const email: string = req.body.email;
-      const password: string = req.body.password;
+    const { email, password } = req.body;
 
-      const user = await User.findOne({ email, password });
+    if (email && password) {
+      const user = await UserService.authentication(email, password);
 
       if (user) {
-        const token = JWT.sign(
-          {
-            id: user.id,
-            name: user.name,
-            lastName: user.lastName,
-            email: user.email,
-          },
-          process.env.JWT_SECRET_KEY as string,
-          { expiresIn: "2h" }
-        );
+        const token = generateToken({
+          id: user.id,
+          name: user.name,
+          lastName: user.lastName,
+          email: user.email,
+        });
 
         res.json({
           status: true,
@@ -90,22 +79,21 @@ export const login = async (req: Request, res: Response) => {
           },
           token,
         });
-        return;
       } else {
-        res.status(404).json({
+        res.status(403).json({
           status: false,
-          message: "Usuário e/ou senha inválidos.",
+          message: "Invalid username and/or password.",
         });
       }
     } else {
       res.status(400).json({
         status: false,
-        message: "Dados obrigatórios não enviados.",
+        message: "Incomplete data.",
       });
     }
   } catch (err: any) {
     res.status(500).json({
-      message: "Ocorreu algum erro ao fazer login.",
+      message: "Error when logging in.",
       error: err.message,
     });
   }
@@ -113,14 +101,14 @@ export const login = async (req: Request, res: Response) => {
 
 export const list = async (req: Request, res: Response) => {
   try {
-    const data = await User.find().select("name lastName email");
+    const data = await UserService.getAll();
 
     res.status(200).json({
       data,
     });
   } catch (err: any) {
     res.status(500).json({
-      message: "Ocorreu algum erro ao listar os usuários.",
+      message: "Error listing users.",
       error: err.message,
     });
   }
@@ -128,15 +116,14 @@ export const list = async (req: Request, res: Response) => {
 
 export const getOne = async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
-    const data = await User.findById(id);
+    const data = await UserService.findById(req.params.id);
 
     res.status(200).json({
       data,
     });
   } catch (err: any) {
     res.status(500).json({
-      message: "Ocorreu algum erro ao buscar o usuário.",
+      message: "Error when searching for the user.",
       error: err.message,
     });
   }
@@ -145,24 +132,16 @@ export const getOne = async (req: Request, res: Response) => {
 export const update = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const body = req.body;
-
-    const updateData = {
-      ...body,
-      $inc: { __v: 1 },
-    };
-
-    const userUpdated = await User.findByIdAndUpdate(id, updateData, {
-      new: true,
-    });
+    const data = req.body;
+    const userUpdated = await UserService.updateUser(id, data);
 
     res.status(201).json({
-      message: "Dados atualizados com sucesso!",
+      message: "Data updated successfully!",
       userUpdated,
     });
   } catch (err: any) {
     res.status(500).json({
-      message: "Ocorreu algum erro ao atualizar dados do usuário.",
+      message: "Error updating user data.",
       error: err.message,
     });
   }
@@ -170,15 +149,14 @@ export const update = async (req: Request, res: Response) => {
 
 export const remove = async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
-    await User.deleteOne({ _id: id });
+    await UserService.deleteUser(req.params.id);
 
     res.status(200).json({
-      message: "Usuário removido com sucesso!",
+      message: "User removed successfully!",
     });
   } catch (err: any) {
     res.status(500).json({
-      message: "Ocorreu algum erro ao remover o usuário.",
+      message: "Error removing user.",
       error: err.message,
     });
   }
