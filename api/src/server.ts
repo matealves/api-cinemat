@@ -23,8 +23,8 @@ server.use("/users", userRoutes);
 server.use("/movies", moviesRoutes);
 
 server.listen(PORT, () => {
-  console.log(`[PORT:${PORT}] \x1b[32mServidor local iniciado.\x1b[0m`);
+  console.log(`[PORT:${PORT}] \x1b[32mServer running...\x1b[0m`);
 });
 
-console.log("Conectando ao MongoDB...");
+console.log("Connecting to MongoDB...");
 connectDB();

@@ -15,7 +15,7 @@ export const getAll = async () => {
 };
 
 export const deleteUser = async (id: string) => {
-  return await User.deleteOne({ id });
+  return await User.deleteOne({ _id: id });
 };
 
 export const createUser = async (
