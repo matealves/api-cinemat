@@ -1,12 +1,9 @@
 import { Request, Response } from "express";
-import JWT from "jsonwebtoken";
 import dotenv from "dotenv";
-
-import User from "../models/User";
-import { generateToken, verifyToken } from "../utils/token";
-import * as UserService from "../services/UserService";
-
 dotenv.config();
+
+import { generateToken } from "../utils/token";
+import * as UserService from "../services/UserService";
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -135,24 +132,16 @@ export const getOne = async (req: Request, res: Response) => {
 export const update = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const body = req.body;
-
-    const updateData = {
-      ...body,
-      $inc: { __v: 1 },
-    };
-
-    const userUpdated = await User.findByIdAndUpdate(id, updateData, {
-      new: true,
-    });
+    const data = req.body;
+    const userUpdated = await UserService.updateUser(id, data);
 
     res.status(201).json({
-      message: "Dados atualizados com sucesso!",
+      message: "Data updated successfully!",
       userUpdated,
     });
   } catch (err: any) {
     res.status(500).json({
-      message: "Ocorreu algum erro ao atualizar dados do usuário.",
+      message: "Error updating user data.",
       error: err.message,
     });
   }
@@ -160,15 +149,14 @@ export const update = async (req: Request, res: Response) => {
 
 export const remove = async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
-    await User.deleteOne({ _id: id });
+    await UserService.deleteUser(req.params.id);
 
     res.status(200).json({
-      message: "Usuário removido com sucesso!",
+      message: "User removed successfully!",
     });
   } catch (err: any) {
     res.status(500).json({
-      message: "Ocorreu algum erro ao remover o usuário.",
+      message: "Error removing user.",
       error: err.message,
     });
   }
