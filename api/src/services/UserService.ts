@@ -6,9 +6,17 @@ export const findByEmail = async (email: string) => {
   return await User.findOne({ email });
 };
 
-// export const findById = async (id: string) => {
-//   return await User.findById(id);
-// };
+export const findById = async (id: string) => {
+  return await User.findById(id);
+};
+
+export const getAll = async () => {
+  return await User.find().select("name lastName email");
+};
+
+export const deleteUser = async (id: string) => {
+  return await User.deleteOne({ id });
+};
 
 export const createUser = async (
   name: string,
@@ -17,14 +25,13 @@ export const createUser = async (
   password: string
 ) => {
   const hash = bcrypt.hashSync(password, 10);
-  const newUser = await User.create({
+
+  return await User.create({
     name,
     lastName,
     email,
     password: hash,
   });
-
-  return newUser;
 };
 
 export const matchPassword = async (
@@ -44,6 +51,13 @@ export const authentication = async (email: string, password: string) => {
   return authenticate ? user : false;
 };
 
-// export const all = async () => {
-//   return await User.findAll();
-// };
+export const updateUser = async (id: string, data: object) => {
+  const updateData = {
+    ...data,
+    $inc: { __v: 1 },
+  };
+
+  return await User.findByIdAndUpdate(id, updateData, {
+    new: true,
+  });
+};
