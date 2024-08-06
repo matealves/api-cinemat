@@ -44,6 +44,7 @@ export const createMovie = async (
           (_, index): SeatType => ({
             number: index + 1,
             reserved: false,
+            user: null,
           })
         ),
       });

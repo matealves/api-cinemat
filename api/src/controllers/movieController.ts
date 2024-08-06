@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
 import * as MovieService from "../services/MovieService";
+import * as UserService from "../services/UserService";
 
 export const create = async (req: Request, res: Response) => {
   try {
@@ -165,9 +166,18 @@ export const update = async (req: Request, res: Response) => {
 
 export const buyTickets = async (req: Request, res: Response) => {
   try {
-    const { hour, seatTickets } = req.body;
+    const { hour, seatTickets, user } = req.body;
 
-    if (hour && seatTickets) {
+    if (hour && seatTickets && user) {
+      const findUser = UserService.findByEmail(user);
+
+      if (!findUser) {
+        return res.status(404).json({
+          status: false,
+          message: "404 - user not found.",
+        });
+      }
+
       const regex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
       const hourValidation = regex.test(hour);
 
@@ -222,6 +232,7 @@ export const buyTickets = async (req: Request, res: Response) => {
 
             if (seat) {
               seat.reserved = true;
+              seat.user = user;
               reserved.push(seat);
             }
           }
