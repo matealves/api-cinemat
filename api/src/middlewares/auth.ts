@@ -18,8 +18,8 @@ export const Auth = {
     if (success) {
       next();
     } else {
-      res.status(403);
-      res.json({ error: "Não autorizado." });
+      res.status(401);
+      res.json({ error: "401 - Unauthorized." });
     }
   },
 };
