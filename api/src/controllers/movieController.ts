@@ -1,59 +1,28 @@
 import { Request, Response } from "express";
 
-import { getRandomNumber } from "../utils/getRandomNumber";
-import { generateRandomTimes } from "../utils/generateRandomTimes";
-
-import { ScheduleType, SeatType } from "../types/movie";
-import Movie from "../models/Movie";
+import * as MovieService from "../services/MovieService";
 
 export const create = async (req: Request, res: Response) => {
   try {
     const { name, description, poster } = req.body;
 
     if (name && description && poster) {
-      const newMovie = new Movie();
-      newMovie.name = name;
-      newMovie.description = description;
-      newMovie.poster = poster;
-
-      const schedules = (count: number): ScheduleType[] => {
-        const items = [];
-        const hours = generateRandomTimes(count);
-
-        while (items.length < count) {
-          items.push({
-            hour: hours[items.length],
-            room: getRandomNumber(1, 12),
-            seats: Array.from(
-              { length: 60 },
-              (_, index): SeatType => ({
-                number: index + 1,
-                reserved: false,
-              })
-            ),
-          });
-        }
-
-        return items;
-      };
-
-      newMovie.schedules = schedules(3);
-      await newMovie.save();
+      const newMovie = MovieService.createMovie(name, description, poster);
 
       res.status(201).json({
         status: true,
-        message: "Filme adicionado com sucesso!",
+        message: "Movie added successfully!",
         data: newMovie,
       });
     } else {
       res.status(400).json({
         status: false,
-        message: "Dados obrigatórios não enviados.",
+        message: "Incomplete data.",
       });
     }
   } catch (err: any) {
     res.status(500).json({
-      message: "Ocorreu algum erro ao insetir filme.",
+      message: "Error inserting film.",
       error: err.message,
     });
   }
@@ -61,14 +30,14 @@ export const create = async (req: Request, res: Response) => {
 
 export const list = async (req: Request, res: Response) => {
   try {
-    const data = await Movie.find().select("name description poster");
+    const data = await MovieService.getAll();
 
     res.status(200).json({
       data,
     });
   } catch (err: any) {
     res.status(500).json({
-      message: "Ocorreu algum erro ao listar os filmes.",
+      message: "Error listing films.",
       error: err.message,
     });
   }
@@ -76,8 +45,7 @@ export const list = async (req: Request, res: Response) => {
 
 export const schedules = async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
-    const movie = await Movie.findById(id).select("name schedules poster");
+    const movie = await MovieService.getSchedulesById(req.params.id);
 
     if (movie) {
       type Data = {
@@ -91,9 +59,8 @@ export const schedules = async (req: Request, res: Response) => {
         poster: movie.poster,
         schedules: [],
       };
-      const schedules = movie.schedules;
 
-      schedules.map((item) => {
+      movie.schedules.map((item) => {
         return data.schedules.push(item.hour);
       });
 
@@ -103,7 +70,7 @@ export const schedules = async (req: Request, res: Response) => {
     }
   } catch (err: any) {
     res.status(500).json({
-      message: "Ocorreu algum erro ao listar os horários do filme.",
+      message: "Error listing movie times.",
       error: err.message,
     });
   }
@@ -111,11 +78,10 @@ export const schedules = async (req: Request, res: Response) => {
 
 export const seats = async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
-    const { hour } = req.body;
+    const hour = req.body.hour;
 
     if (hour) {
-      const movie = await Movie.findById(id).select("name schedules poster");
+      const movie = await MovieService.getSchedulesById(req.params.id);
 
       if (movie) {
         const regex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
@@ -127,7 +93,7 @@ export const seats = async (req: Request, res: Response) => {
           if (!item) {
             return res.status(404).json({
               status: false,
-              message: "404 - horário não encontrado.",
+              message: "404 - time not found.",
             });
           }
 
@@ -145,19 +111,19 @@ export const seats = async (req: Request, res: Response) => {
         } else {
           res.status(400).json({
             status: false,
-            message: "Horário inválido.",
+            message: "Invalid time.",
           });
         }
       }
     } else {
       res.status(400).json({
         status: false,
-        message: "Dados obrigatórios não enviados.",
+        message: "Incomplete data.",
       });
     }
   } catch (err: any) {
     res.status(500).json({
-      message: "Ocorreu algum erro ao listar as poltronas da sala.",
+      message: "Error listing the seats in the room.",
       error: err.message,
     });
   }
@@ -165,15 +131,14 @@ export const seats = async (req: Request, res: Response) => {
 
 export const getOne = async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
-    const data = await Movie.findById(id);
+    const data = await MovieService.findById(req.params.id);
 
     res.status(200).json({
       data,
     });
   } catch (err: any) {
     res.status(500).json({
-      message: "Ocorreu algum erro ao buscar o filme.",
+      message: "Error searching for the movie.",
       error: err.message,
     });
   }
@@ -181,25 +146,18 @@ export const getOne = async (req: Request, res: Response) => {
 
 export const update = async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
-    const body = req.body;
-
-    const updateData = {
-      ...body,
-      $inc: { __v: 1 },
-    };
-
-    const userUpdated = await Movie.findByIdAndUpdate(id, updateData, {
-      new: true,
-    });
+    const movieUpdated = await MovieService.updateMovie(
+      req.params.id,
+      req.body
+    );
 
     res.status(201).json({
-      message: "Dados atualizados com sucesso!",
-      userUpdated,
+      message: "Data updated successfully!",
+      movieUpdated,
     });
   } catch (err: any) {
     res.status(500).json({
-      message: "Ocorreu algum erro ao atualizar dados do filme.",
+      message: "Error updating movie data.",
       error: err.message,
     });
   }
@@ -207,7 +165,6 @@ export const update = async (req: Request, res: Response) => {
 
 export const buyTickets = async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
     const { hour, seatTickets } = req.body;
 
     if (hour && seatTickets) {
@@ -217,11 +174,11 @@ export const buyTickets = async (req: Request, res: Response) => {
       if (!hourValidation) {
         return res.status(400).json({
           status: false,
-          message: "Horário inválido.",
+          message: "Invalid time.",
         });
       }
 
-      const movie = await Movie.findById(id).select("name schedules");
+      const movie = await MovieService.getSchedulesById(req.params.id);
 
       if (movie) {
         const item = movie.schedules.find((item) => item.hour === hour);
@@ -229,7 +186,7 @@ export const buyTickets = async (req: Request, res: Response) => {
         if (!item) {
           return res.status(404).json({
             status: false,
-            message: "404 - horário não encontrado.",
+            message: "404 - time not found.",
           });
         }
 
@@ -243,7 +200,7 @@ export const buyTickets = async (req: Request, res: Response) => {
             if (findSeat.reserved) {
               return res.status(409).json({
                 status: false,
-                message: "Assento indisponível!",
+                message: "Seat unavailable!",
               });
             } else {
               shouldUpdate = true;
@@ -251,7 +208,7 @@ export const buyTickets = async (req: Request, res: Response) => {
           } else {
             return res.status(404).json({
               status: false,
-              message: "404- assento não encontrado.",
+              message: "404- seat not found.",
             });
           }
         }
@@ -273,7 +230,7 @@ export const buyTickets = async (req: Request, res: Response) => {
 
           res.status(201).json({
             status: true,
-            message: "Assentos reservados com sucesso!",
+            message: "Seats reserved successfully!",
             nameMovie: movie.name,
             hour: item.hour,
             room: item.room,
@@ -283,18 +240,18 @@ export const buyTickets = async (req: Request, res: Response) => {
       } else {
         res.status(404).json({
           status: false,
-          message: "404 - filme não encontrado.",
+          message: "404 - movie not found.",
         });
       }
     } else {
       res.status(400).json({
         status: false,
-        message: "Dados obrigatórios não enviados.",
+        message: "Incomplete data.",
       });
     }
   } catch (err: any) {
     res.status(500).json({
-      message: "Ocorreu algum erro ao reservar entradas para o filme.",
+      message: "Error buy movie tickets.",
       error: err.message,
     });
   }
@@ -302,15 +259,14 @@ export const buyTickets = async (req: Request, res: Response) => {
 
 export const remove = async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
-    await Movie.deleteOne({ _id: id });
+    await MovieService.deleteMovie(req.params.id);
 
     res.status(200).json({
-      message: "Filme removido com sucesso!",
+      message: "Movie removed successfully!",
     });
   } catch (err: any) {
     res.status(500).json({
-      message: "Ocorreu algum erro ao remover o filme.",
+      message: "Error removing the film.",
       error: err.message,
     });
   }
