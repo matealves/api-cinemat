@@ -63,7 +63,7 @@ export const login = async (req: Request, res: Response) => {
 
       if (user) {
         const token = generateToken({
-          id: user.id,
+          id: user._id,
           name: user.name,
           lastName: user.lastName,
           email: user.email,
@@ -72,7 +72,7 @@ export const login = async (req: Request, res: Response) => {
         res.json({
           status: true,
           userLogged: {
-            id: user.id,
+            id: user._id,
             name: user.name,
             lastName: user.lastName,
             email: user.email,
@@ -82,7 +82,7 @@ export const login = async (req: Request, res: Response) => {
       } else {
         res.status(403).json({
           status: false,
-          message: "Invalid username and/or password.",
+          message: "Invalid email and/or password.",
         });
       }
     } else {

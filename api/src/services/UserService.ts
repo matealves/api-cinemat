@@ -1,17 +1,18 @@
 import bcrypt from "bcrypt";
 
 import User from "../models/User";
+// .lean() converte os documentos em objetos JavaScript puros
 
 export const findByEmail = async (email: string) => {
-  return await User.findOne({ email });
+  return await User.findOne({ email }).lean();
 };
 
 export const findById = async (id: string) => {
-  return await User.findById(id);
+  return await User.findById(id).lean();
 };
 
 export const getAll = async () => {
-  return await User.find().select("name lastName email");
+  return await User.find().select("name lastName email").lean();
 };
 
 export const deleteUser = async (id: string) => {

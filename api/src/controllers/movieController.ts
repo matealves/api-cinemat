@@ -1,13 +1,18 @@
 import { Request, Response } from "express";
 
 import * as MovieService from "../services/MovieService";
+import * as UserService from "../services/UserService";
 
 export const create = async (req: Request, res: Response) => {
   try {
     const { name, description, poster } = req.body;
 
     if (name && description && poster) {
-      const newMovie = MovieService.createMovie(name, description, poster);
+      const newMovie = await MovieService.createMovie(
+        name,
+        description,
+        poster
+      );
 
       res.status(201).json({
         status: true,
@@ -165,9 +170,18 @@ export const update = async (req: Request, res: Response) => {
 
 export const buyTickets = async (req: Request, res: Response) => {
   try {
-    const { hour, seatTickets } = req.body;
+    const { hour, seatTickets, user } = req.body;
 
-    if (hour && seatTickets) {
+    if (hour && seatTickets && user) {
+      const findUser = UserService.findByEmail(user);
+
+      if (!findUser) {
+        return res.status(404).json({
+          status: false,
+          message: "404 - user not found.",
+        });
+      }
+
       const regex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
       const hourValidation = regex.test(hour);
 
@@ -222,6 +236,7 @@ export const buyTickets = async (req: Request, res: Response) => {
 
             if (seat) {
               seat.reserved = true;
+              seat.user = user;
               reserved.push(seat);
             }
           }
@@ -252,6 +267,30 @@ export const buyTickets = async (req: Request, res: Response) => {
   } catch (err: any) {
     res.status(500).json({
       message: "Error buy movie tickets.",
+      error: err.message,
+    });
+  }
+};
+
+export const shopping = async (req: Request, res: Response) => {
+  try {
+    const findUser = await UserService.findByEmail(req.params.email);
+
+    if (!findUser) {
+      return res.status(404).json({
+        status: false,
+        message: "404 - user not found.",
+      });
+    }
+
+    const data = await MovieService.getMoviesByUserEmail(req.params.email);
+
+    res.status(200).json({
+      data,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      message: "Error listing purchases from this user.",
       error: err.message,
     });
   }

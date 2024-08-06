@@ -25,6 +25,7 @@ getOne ✔️
 update✔️
 schedules✔️
 seats ✔️
+shopping ✔️
 tickets ✔️
 remove ✔️
 
@@ -33,4 +34,4 @@ remove ✔️
 - Refatorar controllers User > separar funções no "Services" ✔️
 - Refatorar controllers Movies > separar funções no "Services" ✔️
 
-- Vincular usuário na reserva dos assentos
+- Vincular usuário na reserva dos assentos ✔️

@@ -1,6 +1,7 @@
 export type SeatType = {
   number: number;
   reserved: boolean;
+  user: string | null;
 };
 
 export type ScheduleType = {
