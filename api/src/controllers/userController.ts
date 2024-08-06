@@ -93,7 +93,7 @@ export const login = async (req: Request, res: Response) => {
     }
   } catch (err: any) {
     res.status(500).json({
-      message: "Error when logging in.",
+      message: "Error logging in.",
       error: err.message,
     });
   }
@@ -123,7 +123,7 @@ export const getOne = async (req: Request, res: Response) => {
     });
   } catch (err: any) {
     res.status(500).json({
-      message: "Error when searching for the user.",
+      message: "Error searching for the user.",
       error: err.message,
     });
   }
@@ -131,9 +131,7 @@ export const getOne = async (req: Request, res: Response) => {
 
 export const update = async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
-    const data = req.body;
-    const userUpdated = await UserService.updateUser(id, data);
+    const userUpdated = await UserService.updateUser(req.params.id, req.body);
 
     res.status(201).json({
       message: "Data updated successfully!",
