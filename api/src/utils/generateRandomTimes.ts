@@ -15,5 +15,5 @@ export function generateRandomTimes(count: number = 1): string | string[] {
 
   const times = Array.from(timesSet);
 
-  return count > 1 ? times.sort() : times[0];
+  return times.sort();
 }
