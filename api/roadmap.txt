@@ -25,6 +25,7 @@ getOne ✔️
 update✔️
 schedules✔️
 seats ✔️
+shopping ✔️
 tickets ✔️
 remove ✔️
 
