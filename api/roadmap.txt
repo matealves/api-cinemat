@@ -31,6 +31,6 @@ remove ✔️
 - Utilizar HASH na senha cadastrada ✔️
 
 - Refatorar controllers User > separar funções no "Services" ✔️
-- Refatorar controllers Movies > separar funções no "Services"
+- Refatorar controllers Movies > separar funções no "Services" ✔️
 
 - Vincular usuário na reserva dos assentos
