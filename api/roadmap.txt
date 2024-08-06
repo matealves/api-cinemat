@@ -35,3 +35,5 @@ remove ✔️
 - Refatorar controllers Movies > separar funções no "Services" ✔️
 
 - Vincular usuário na reserva dos assentos ✔️
+
+- Documentar a API usando Swagger... (pendente)
