@@ -5,6 +5,7 @@ const SeatsSchema = new Schema(
   {
     number: { type: Number, required: true },
     reserved: { type: Boolean, required: true, default: false },
+    user: { type: String || null, required: true, default: null },
   },
   { _id: false } // Define como esquemas de subdocumentos, sem um campo _id
 );
