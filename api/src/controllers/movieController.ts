@@ -8,7 +8,11 @@ export const create = async (req: Request, res: Response) => {
     const { name, description, poster } = req.body;
 
     if (name && description && poster) {
-      const newMovie = MovieService.createMovie(name, description, poster);
+      const newMovie = await MovieService.createMovie(
+        name,
+        description,
+        poster
+      );
 
       res.status(201).json({
         status: true,
