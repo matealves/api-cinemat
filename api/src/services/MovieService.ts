@@ -4,17 +4,43 @@ import { getRandomNumber } from "../utils/getRandomNumber";
 import { generateRandomTimes } from "../utils/generateRandomTimes";
 
 import Movie from "../models/Movie";
+// .lean() converte os documentos em objetos JavaScript puros
 
 export const findById = async (id: string) => {
-  return await Movie.findById(id);
+  return await Movie.findById(id).lean();
 };
 
 export const getAll = async () => {
-  return await Movie.find().select("name description poster");
+  return await Movie.find().select("name description poster").lean();
 };
 
 export const getSchedulesById = async (id: string) => {
   return await Movie.findById(id).select("name schedules poster");
+};
+
+export const getMoviesByUserEmail = async (email: string) => {
+  const movies = await Movie.find().lean();
+
+  const filteredMovies = movies
+    .map((movie) => {
+      const filteredSchedules = movie.schedules
+        .map((schedule) => {
+          const filteredSeats = schedule.seats.filter(
+            (seat) => seat.reserved && seat.user === email
+          );
+          return filteredSeats.length
+            ? { ...schedule, seats: filteredSeats }
+            : null;
+        })
+        .filter((schedule) => schedule !== null);
+
+      return filteredSchedules.length
+        ? { ...movie, schedules: filteredSchedules }
+        : null;
+    })
+    .filter((movie) => movie !== null);
+
+  return filteredMovies ?? [];
 };
 
 export const deleteMovie = async (id: string) => {

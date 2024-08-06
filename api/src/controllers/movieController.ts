@@ -272,6 +272,30 @@ export const buyTickets = async (req: Request, res: Response) => {
   }
 };
 
+export const shopping = async (req: Request, res: Response) => {
+  try {
+    const findUser = await UserService.findByEmail(req.params.email);
+
+    if (!findUser) {
+      return res.status(404).json({
+        status: false,
+        message: "404 - user not found.",
+      });
+    }
+
+    const data = await MovieService.getMoviesByUserEmail(req.params.email);
+
+    res.status(200).json({
+      data,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      message: "Error listing purchases from this user.",
+      error: err.message,
+    });
+  }
+};
+
 export const remove = async (req: Request, res: Response) => {
   try {
     await MovieService.deleteMovie(req.params.id);
