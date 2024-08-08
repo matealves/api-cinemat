@@ -1,0 +1,856 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Cinemat API",
+    "description": "Documentation for the Cinemat API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "tags": ["User"],
+        "summary": "List all users",
+        "responses": {
+          "200": {
+            "description": "List of users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error listing users"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get a user by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Error retrieving user"
+          }
+        }
+      },
+      "put": {
+        "tags": ["User"],
+        "summary": "Update user information",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Error updating user"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["User"],
+        "summary": "Delete a user",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted successfully"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Error deleting user"
+          }
+        }
+      }
+    },
+    "/users/register": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Register a new user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Incomplete data or user already exists"
+          },
+          "500": {
+            "description": "Error registering user"
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Login user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User logged in successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "userLogged": {
+                      "$ref": "#/components/schemas/User"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid email or password"
+          },
+          "400": {
+            "description": "Incomplete data"
+          },
+          "500": {
+            "description": "Error logging in"
+          }
+        }
+      }
+    },
+    "/movies": {
+      "post": {
+        "tags": ["Movie"],
+        "summary": "Create a new movie",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMovie"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Movie created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Movie"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Incomplete data"
+          },
+          "500": {
+            "description": "Error creating movie"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Movie"],
+        "summary": "List all movies",
+        "responses": {
+          "200": {
+            "description": "List of movies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Movie"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error listing movies"
+          }
+        }
+      }
+    },
+    "/movies/{id}": {
+      "get": {
+        "tags": ["Movie"],
+        "summary": "Get a movie by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Movie details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Movie"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error fetching movie"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Movie"],
+        "summary": "Update a movie by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMovie"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Movie updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "movieUpdated": {
+                      "$ref": "#/components/schemas/Movie"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Incomplete data"
+          },
+          "500": {
+            "description": "Error updating movie"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Movie"],
+        "summary": "Delete a movie by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Movie deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error deleting movie"
+          }
+        }
+      }
+    },
+    "/movies/schedules/{id}": {
+      "get": {
+        "tags": ["Movie"],
+        "summary": "Get movie schedules by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Movie schedules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "nameMovie": {
+                          "type": "string"
+                        },
+                        "poster": {
+                          "type": "string"
+                        },
+                        "schedules": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error fetching movie schedules"
+          }
+        }
+      }
+    },
+    "/movies/seats/{id}": {
+      "post": {
+        "tags": ["Movie"],
+        "summary": "Get movie seats by ID and hour",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "hour": {
+                    "type": "string",
+                    "example": "14:00"
+                  }
+                },
+                "required": ["hour"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Seats availability for a movie",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "nameMovie": {
+                          "type": "string"
+                        },
+                        "poster": {
+                          "type": "string"
+                        },
+                        "hour": {
+                          "type": "string"
+                        },
+                        "room": {
+                          "type": "number"
+                        },
+                        "seats": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Seat"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid time or incomplete data"
+          },
+          "404": {
+            "description": "Movie or time not found"
+          },
+          "500": {
+            "description": "Error fetching seats"
+          }
+        }
+      }
+    },
+    "/movies/tickets/{id}": {
+      "put": {
+        "tags": ["Movie"],
+        "summary": "Buy tickets for a movie",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "hour": {
+                    "type": "string",
+                    "example": "14:00"
+                  },
+                  "seatTickets": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    }
+                  },
+                  "user": {
+                    "type": "string",
+                    "example": "user@example.com"
+                  }
+                },
+                "required": ["hour", "seatTickets", "user"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tickets purchased successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "nameMovie": {
+                      "type": "string"
+                    },
+                    "hour": {
+                      "type": "string"
+                    },
+                    "room": {
+                      "type": "number"
+                    },
+                    "seatsReserved": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Seat"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid time, seat not available, or incomplete data"
+          },
+          "404": {
+            "description": "Movie, time, or user not found"
+          },
+          "409": {
+            "description": "Seat unavailable"
+          },
+          "500": {
+            "description": "Error purchasing tickets"
+          }
+        }
+      }
+    },
+    "/movies/shopping/{email}": {
+      "get": {
+        "tags": ["Shopping"],
+        "summary": "Get movies purchased by user",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Movies purchased by the user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Movie"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Error fetching user purchases"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "RegisterUser": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "LoginUser": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateUser": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "Movie": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "poster": {
+            "type": "string"
+          },
+          "schedules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Schedule"
+            }
+          }
+        }
+      },
+      "CreateMovie": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "poster": {
+            "type": "string"
+          },
+          "schedules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Schedule"
+            }
+          }
+        }
+      },
+      "UpdateMovie": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "poster": {
+            "type": "string"
+          },
+          "schedules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Schedule"
+            }
+          }
+        }
+      },
+      "Schedule": {
+        "type": "object",
+        "properties": {
+          "hour": {
+            "type": "string"
+          },
+          "room": {
+            "type": "number"
+          },
+          "seats": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Seat"
+            }
+          }
+        }
+      },
+      "Seat": {
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "number"
+          },
+          "reserved": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ShoppingData": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ]
+}
