@@ -477,6 +477,11 @@
     },
     "/movies/seats/{id}": {
       "post": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "tags": ["Movie"],
         "summary": "Get movie seats by ID and hour",
         "parameters": [
@@ -555,6 +560,11 @@
     },
     "/movies/tickets/{id}": {
       "put": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "tags": ["Movie"],
         "summary": "Buy tickets for a movie",
         "parameters": [
@@ -644,6 +654,11 @@
     },
     "/movies/shopping/{email}": {
       "get": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "tags": ["Shopping"],
         "summary": "Get movies purchased by user",
         "parameters": [
@@ -847,10 +862,5 @@
         "bearerFormat": "JWT"
       }
     }
-  },
-  "security": [
-    {
-      "BearerAuth": []
-    }
-  ]
+  }
 }
