@@ -2,6 +2,9 @@ import express from "express";
 import path from "path";
 import dotenv from "dotenv";
 
+import swaggerUI from "swagger-ui-express";
+import swaggerDocument from "../swagger.json";
+
 import connectDB from "./database/mongodb";
 import userRoutes from "./routes/user.routes";
 import moviesRoutes from "./routes/movies.routes";
@@ -21,6 +24,7 @@ server.use("/ping", (req, res) => {
 // Routes
 server.use("/users", userRoutes);
 server.use("/movies", moviesRoutes);
+server.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 server.listen(PORT, () => {
   console.log(`[PORT:${PORT}] \x1b[32mServer running...\x1b[0m`);
