@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  db:
+    image: mongo:latest
+    container_name: database
+    ports:
+      - "27017:27017"
+    volumes:
+      - db-data:/data/db
+    restart: always
+    
+  api:
+    build: ./api
+    container_name: api
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db
+    restart: always
+    env_file:
+      - ./api/.env
+
+volumes:
+  db-data:
