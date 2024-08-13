@@ -36,4 +36,4 @@ remove ✔️
 
 - Vincular usuário na reserva dos assentos ✔️
 
-- Documentar a API usando Swagger... (pendente)
+- Documentar a API usando Swagger ✔️
