@@ -1,10 +1,10 @@
-# Cinemat
+# API - Cinemat
 
-### Projeto full-stack completo. Banco de dados, API e Interface, de uma aplicação usada na compra de ingressos para um filme de cinema. 
-### Complete full-stack project. Database, API and Interface, of an application used to purchase tickets for a cinema film.
+### API desenvolvida em Node, TypeScript, MongoDB e Docker, para uma aplicação de compra de ingressos de um cinema. 
 
 [• Visão geral](#review)<br>
-[• Como rodar o projeto](#start)<br>
+[• Requisitos](#requisitos)<br>
+[• Como rodar o projeto?](#start)<br>
 [• Skills utilizadas](#leng)<br>
 [• Contato](#contato)<br>
 <br>
@@ -13,28 +13,54 @@
 
 # Visão geral
 
-Foram utilizados diversos conhecimentos adquiridos ao longo do tempo, com o intuito de unir esses conhecimentos e desenvolver uma **aplicação completa** do zero.
+Foram utilizados diversos conhecimentos adquiridos ao longo do tempo, com o intuito de praticar e desenvolver uma **aplicação completa** do zero até o deploy. Essa é a parte 1/2, tendo o frontend em outro repositório.
 <br>
 
-### Estrutura do Repositório
-
-- `api/`: Back-end da aplicação e Banco de Dados.
-- `frontend/`: Interface da aplicação integrada ao banco de dados.
-- `../Dockerfile`: Define a imagem Docker a ser construída.
-- `../scripts/`: Scripts auxiliares para construção e execução dos containers.
-- `docker-compose.yml`: Define os serviços a serem executados com Docker Compose.
+<p id="requisitos"></p>
 
 ### Requisitos
+##### - *Método 1 - Docker:*
 
-- [Docker](https://www.docker.com/get-started)
+- [Docker](https://www.docker.com/get-started) 
 - [Docker Compose](https://docs.docker.com/compose/install/)
+
+##### - *Método 2 - localhost:*
+
+- [Node.js](https://nodejs.org/pt) 
+- [MongoDB](https://www.mongodb.com/pt-br/docs/manual/tutorial/install-mongodb-on-windows/) 
+
+<br>
 
 <p id="start"></p>
 
-### - Como rodar o projeto:
+## Como rodar o projeto?
 
-`######## em desenvolvimento...`
+### Passo 1: Clonar o Repositório
 
+```sh
+git clone https://github.com/matealves/api-cinemat.git
+```
+
+### Passo 2: Renomear o arquivo `.env.example` para `.env` 
+
+### Passo 3: Criar senha para a variável de ambiente `JWT_SECRET_KEY`
+
+```sh
+JWT_SECRET_KEY=123456
+```
+
+### Passo 4: Rodar comando(s) no terminal
+##### - *Método 1 -  rodar com Docker:*
+```sh
+docker-compose up -d
+```
+
+##### - *Método 2 - rodar no localhost:*
+```sh
+npm install
+npm run dev
+```
+### [- Documentação API - Swagger](#) 
 <br>
 
 <p id="leng"></p>
@@ -42,9 +68,8 @@ Foram utilizados diversos conhecimentos adquiridos ao longo do tempo, com o intu
 # Skills utilizadas
 
 <p>
-  <img align="center" title="TypeScript" height="30" width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg">
-  <img align="center" title="React" height="30" width="40" title="React" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg">
   <img align="center" title="NodeJS" height="30" width="40" title="NodeJs" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg">
+  <img align="center" title="TypeScript" height="30" width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg">
   <img align="center" title="MongoDB" height="30" width="40" title="NodeJs" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-original.svg">
   <img align="center" title="Docker" height="40" width="40" title="NodeJs" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg">
 
